@@ -28,11 +28,16 @@
   "homepage": "https://github.com/YOUR_USERNAME/html-to-pdf-generator#readme",
   "scripts": {
     "prepare": "playwright install chromium",
+    "generate": "node tools/generate-html.js",
     "pdf": "node tools/make-pdf.js",
     "pdf:blue-rakun": "node tools/make-pdf.js --logo=blue-rakun",
     "pdf:spa-bureau": "node tools/make-pdf.js --logo=spa-bureau",
-    "pdf:test": "node tools/make-pdf.js --test",
-    "install:fonts": "echo Fonts should be placed in src/fonts/"
+    "pdf:test": "node tools/make-pdf.js --test"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "form-data": "^4.0.4",
+    "openai": "^4.77.0"
   },
   "devDependencies": {
     "playwright": "^1.48.0"
@@ -42,5 +47,3 @@
     "npm": ">=8.0.0"
   }
 }
-
-

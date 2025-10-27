@@ -1,19 +1,33 @@
 # Dependencies
 node_modules/
-package-lock.json
 
-# Generated PDFs
-*.pdf
+# Environment variables
+.env
 
-# Temporary files
-*.tmp
+# Input documents (exclude user files, keep folder)
+input/*
+!input/.gitkeep
+
+# Generated files (exclude generated files, keep folder)
+generated/sessions/*
+!generated/sessions/.gitkeep
+
+# Output files
+out/
+
+# Playwright
+.playwright/
+
+# Logs
 *.log
+npm-debug.log*
+
+# OS
 .DS_Store
 Thumbs.db
 
 # IDE
 .vscode/
 .idea/
-
-# System files
-desktop.ini
+*.swp
+*.swo

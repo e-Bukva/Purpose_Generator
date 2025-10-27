@@ -7,7 +7,7 @@
 import { chromium } from 'playwright';
 import { fileURLToPath } from 'url';
 import { dirname, resolve, join } from 'path';
-import { existsSync, mkdirSync, readFileSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync, readdirSync } from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -15,11 +15,11 @@ const __dirname = dirname(__filename);
 // === Конфигурация ===
 
 const CONFIG = {
-  // Пути
-  htmlPath: resolve(__dirname, '../src/index.html'),
-  outDir: resolve(__dirname, '../out'),
-  outFile: 'proposal.pdf',  // Базовое имя (будет изменено в generatePDF)
-  useTimestamp: true,  // Добавлять дату и время к имени файла
+  // Пути (будут определены динамически из последней сессии)
+  htmlPath: null,  // определяется автоматически
+  outDir: null,    // определяется автоматически  
+  outFile: 'proposal.pdf',
+  useTimestamp: false,
 
   // Параметры страницы
   format: 'A4',
@@ -72,11 +72,46 @@ function ensureDir(dirPath) {
   }
 }
 
-function validateFiles() {
-  if (!existsSync(CONFIG.htmlPath)) {
-    throw new Error(`HTML файл не найден: ${CONFIG.htmlPath}`);
+/**
+ * Найти последнюю сессию с HTML
+ */
+function findLatestSession() {
+  const generatedDir = resolve(__dirname, '../generated/sessions');
+  
+  if (!existsSync(generatedDir)) {
+    throw new Error('Папка generated/sessions не найдена. Запустите сначала: npm run generate');
   }
-  log(`HTML файл найден: ${CONFIG.htmlPath}`, 'info');
+  
+  const sessions = readdirSync(generatedDir, { withFileTypes: true })
+    .filter(d => d.isDirectory())
+    .map(d => d.name)
+    .sort()
+    .reverse();
+  
+  if (sessions.length === 0) {
+    throw new Error('Сессии не найдены. Запустите сначала: npm run generate');
+  }
+  
+  const latestSession = sessions[0];
+  const sessionPath = join(generatedDir, latestSession);
+  const htmlPath = join(sessionPath, 'proposal.html');
+  
+  if (!existsSync(htmlPath)) {
+    throw new Error(`HTML не найден в сессии: ${htmlPath}`);
+  }
+  
+  // Обновляем CONFIG
+  CONFIG.htmlPath = htmlPath;
+  CONFIG.outDir = sessionPath;
+  
+  log(`Найдена сессия: ${latestSession}`, 'info');
+  log(`HTML файл: ${htmlPath}`, 'info');
+  
+  return sessionPath;
+}
+
+function validateFiles() {
+  findLatestSession();
 }
 
 // === Генерация имени файла с временной меткой ===
