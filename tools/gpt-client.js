@@ -3,8 +3,8 @@
  */
 
 import OpenAI from 'openai';
-import { createReadStream } from 'fs';
-import { basename } from 'path';
+import { createReadStream, readFileSync } from 'fs';
+import { basename, extname } from 'path';
 import { SYSTEM_PROMPT, getInitialPrompt, getCorrectionPrompt } from '../config/gpt-prompts.js';
 
 let openaiClient = null;
@@ -73,11 +73,30 @@ export async function generateHTMLFromFile(filePath, model = 'gpt-5') {
   }
   
   try {
-    // Загружаем файл
-    const fileId = await uploadFile(filePath);
+    const ext = extname(filePath).toLowerCase();
     
-    // Отправляем запрос через Responses API с файлом
-    const response = await fetch('https://api.openai.com/v1/responses', {
+    // Для PDF - загружаем файл и используем Responses API
+    if (ext === '.pdf') {
+      return await generateFromPDFViaFile(filePath, model);
+    } else {
+      // Для Word и Markdown - читаем текст и отправляем через Responses API как input_text
+      const fileContent = readFileSync(filePath, 'utf-8');
+      console.log(`  📄 Чтение файла: ${basename(filePath)}...`);
+      return await generateFromTextViaResponses(fileContent, model);
+    }
+  } catch (error) {
+    throw new Error(`Ошибка генерации HTML из файла: ${error.message}`);
+  }
+}
+
+/**
+ * Генерация HTML из PDF через загрузку файла
+ */
+async function generateFromPDFViaFile(filePath, model) {
+  const fileId = await uploadFile(filePath);
+      
+      // Отправляем запрос через Responses API с файлом
+      const response = await fetch('https://api.openai.com/v1/responses', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -158,9 +177,77 @@ export async function generateHTMLFromFile(filePath, model = 'gpt-5') {
       model: data.model,
       fileId: fileId
     };
-  } catch (error) {
-    throw new Error(`Ошибка генерации HTML из файла: ${error.message}`);
+}
+
+/**
+ * Генерация HTML из текста через Responses API
+ */
+async function generateFromTextViaResponses(textContent, model) {
+  const response = await fetch('https://api.openai.com/v1/responses', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${openaiClient.apiKey}`
+    },
+    body: JSON.stringify({
+      model: model,
+      input: [
+        {
+          role: 'user',
+          content: [
+            { 
+              type: 'input_text', 
+              text: SYSTEM_PROMPT + '\n\nПреобразуй следующий текст в HTML по шаблону. КРИТИЧЕСКИ ВАЖНО: игнорируй колонтитулы, номера страниц и повторяющиеся элементы оформления.\n\n' + textContent
+            }
+          ]
+        }
+      ],
+      max_output_tokens: 16000
+    })
+  });
+  
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`API error ${response.status}: ${errorText}`);
   }
+  
+  const data = await response.json();
+  
+  if (data.status === 'incomplete') {
+    throw new Error(`Ответ неполный: ${data.incomplete_details?.reason}`);
+  }
+  
+  const messageOutput = data.output.find(item => item.type === 'message');
+  if (!messageOutput || !messageOutput.content) {
+    throw new Error(`Не найден message в output`);
+  }
+  
+  const outputText = messageOutput.content.find(item => item.type === 'output_text');
+  if (!outputText) {
+    throw new Error(`Не найден output_text`);
+  }
+  
+  const htmlContent = outputText.text.trim();
+  
+  // Очистка от markdown обёрток
+  let cleanHTML = htmlContent;
+  if (cleanHTML.startsWith('```html')) {
+    cleanHTML = cleanHTML.replace(/^```html\n/, '').replace(/\n```$/, '');
+  } else if (cleanHTML.startsWith('```')) {
+    cleanHTML = cleanHTML.replace(/^```\n/, '').replace(/\n```$/, '');
+  }
+  
+  const usage = {
+    prompt_tokens: data.usage?.input_tokens || 0,
+    completion_tokens: data.usage?.output_tokens || 0,
+    total_tokens: data.usage?.total_tokens || 0
+  };
+  
+  return {
+    html: cleanHTML,
+    usage: usage,
+    model: data.model
+  };
 }
 
 /**
