@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Commercial Proposal — Blue Rakun</title>
+<!-- Print rules for PDF -->
+<link rel="stylesheet" href="./print.css" media="print">
+<style>
+  :root{
+    /* Brand palette */
+    --primary:#255C9E;   /* Blue Rakun primary */
+    --primary-2:#4a75aa; /* supportive blue */
+    --primary-0:#e9edf5; /* light tint */
+    --ink:#161616;
+    --table-head-text:#5a779b;
+    --totals-value-text:#5a779b;
+    --totals-label-text: var(--table-head-text);
+
+    /* Neutrals */
+    --bg:#ffffff; --fg:#414141; --muted:#6b7280;
+
+    /* Rhythm */
+    --unit:8px; --radius:0px; --maxw:920px;
+    --s-1:8px; --s-2:12px; --s-3:16px; --s-4:24px;
+  }
+
+  /* Base */
+  html,body{ background:var(--bg); color:var(--fg); }
+  body{
+    margin:0;
+    font-family:"Gotham","Montserrat","Inter","Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.6; letter-spacing:.01em;
+  }
+  .page{ max-width:var(--maxw); margin: 0 auto; padding: calc(var(--unit)*4); }
+
+  /* Brand header (placeholder logo) */
+  .brand{
+    display:flex; align-items:center; gap: calc(var(--unit)*2);
+    padding: calc(var(--unit)*3) 0 calc(var(--unit)*2);
+    border-bottom:1px solid #e5e7eb;
+  }
+  .brand svg{ width:44px; height:44px; display:block; }
+  .brand-title{ font-weight:600; letter-spacing:.02em; color:var(--ink); }
+  .brand-sub{ color:#6b7280; font-size:.95rem; margin-top:2px; }
+
+  /* Sections (no decorative lines) */
+  .section{ display:flow-root; margin-block:24px 0; padding-block-start:8px; }
+  .section + .section{ background:none; padding-block-start:24px; }
+
+  /* Headings — branded hierarchy */
+  h1,h2,h3{ line-height:1.25; margin:0; }
+  h1{
+    font-size: clamp(28px,4.4vw,36px);
+    font-weight:700;
+    letter-spacing:-0.005em;
+    color:var(--ink);
+    margin-bottom:6px;
+  }
+  h2{
+    font-size: clamp(21px,3.3vw,26px);
+    font-weight:600;
+    letter-spacing:.01em;
+    color:var(--primary);
+    padding-bottom:0;
+    text-transform: uppercase;
+  }
+  .section > * + h2{ margin-top:32px; }
+
+  h3{
+    font-size: clamp(16px,2.5vw,19px);
+    font-weight:600;
+    font-variant-caps: all-small-caps;
+    letter-spacing:.06em;
+    color:var(--primary-2);
+    margin-top:22px;
+  }
+  .muted{ color:#475569; } /* slate-600 */
+
+  /* Vertical rhythm */
+  .section > *{ margin:0; }
+  .section > * + *{ margin-top: var(--s-3); }
+  .section > * + h3{ margin-top: var(--s-4); }
+  h2 + *{ margin-top:14px !important; }
+  h3 + *{ margin-top:12px !important; }
+
+  /* Paragraphs */
+  p{ margin:0; }
+  p + p{ margin-top: var(--s-3); }
+  p + ul, p + .table{ margin-top: var(--s-3) !important; }
+
+  /* Lists (as in reference) */
+  ul{ margin:0; padding:0 0 0 20px; list-style-type: disc; }
+  ul>li{ margin-top: var(--s-2); }
+  ul>li:first-child{ margin-top:0; }
+  ul ul{ margin-top: var(--s-1); padding-left:20px; list-style-type: circle; }
+  ul ul>li{ margin-top: var(--s-1); }
+  ul ul>li:first-child{ margin-top:0; }
+  ul + h2, ul + h3{ margin-top: var(--s-4) !important; }
+
+  /* Tables — color-only theming and strong numeric alignment */
+  .table{
+    width:100%; border-collapse:separate; border-spacing:0;
+    border:none;
+    border-radius:var(--radius); overflow:hidden;
+    margin-top: var(--s-2);
+    background:#fff;
+  }
+  .table thead th{
+    text-align:left;
+    background: var(--primary-0);
+    color: var(--table-head-text);
+    font-weight:600;
+  }
+  .table th,.table td{
+    padding: calc(var(--unit)*2) calc(var(--unit)*2.5);
+    vertical-align:top; font-variant-numeric: tabular-nums;
+  }
+  /* RIGHT alignment for numeric/time columns (header + body) */
+  .table th.num,
+  .table td.num{
+    text-align:right;
+    white-space:nowrap;
+  }
+  .table tbody tr + tr td{
+    border-top:.25px solid color-mix(in oklab, var(--primary) 10%, #fff);
+  }
+  /* Perimeter only around tbody */
+  .table tbody td{ border-left:.25px solid color-mix(in oklab, var(--primary) 15%, #fff); border-right:.25px solid color-mix(in oklab, var(--primary) 15%, #fff); }
+  .table tbody tr:first-child td{ border-top:.25px solid color-mix(in oklab, var(--primary) 15%, #fff); }
+  .table tbody tr:last-child td{ border-bottom:.25px solid color-mix(in oklab, var(--primary) 15%, #fff); }
+  /* Rounded corners for tbody box */
+  .table tbody tr:first-child td:first-child{ border-top-left-radius: var(--radius); }
+  .table tbody tr:first-child td:last-child{ border-top-right-radius: var(--radius); }
+  .table tbody tr:last-child td:first-child{ border-bottom-left-radius: var(--radius); }
+  .table tbody tr:last-child td:last-child{ border-bottom-right-radius: var(--radius); }
+  .indent{ padding-left:36px !important; color:#4b5563; }
+
+  /* Totals */
+  .totals{
+    margin-top: var(--s-4);
+    padding: calc(var(--unit)*3);
+    border:none;
+    border-radius:var(--radius);
+    background: color-mix(in oklab, var(--primary-0) 70%, #fff);
+    display:grid; gap: calc(var(--unit)*1.25);
+  }
+  .lead-row{ display:flex; align-items:baseline; gap:.75rem; }
+  .lead-row .label{ font-weight:700; color:var(--table-head-text); }
+  .lead-row .lead{
+    flex:1; height:1px; transform:translateY(-2px);
+    background: repeating-linear-gradient(to right,
+      transparent 0 6px, color-mix(in oklab, var(--primary) 18%, #fff) 6px 8px);
+  }
+  .lead-row .value{ min-width:9ch; text-align:right; font-variant-numeric: tabular-nums; color:var(--totals-value-text); font-weight:700; }
+
+  /* Notes */
+  .notes{
+    padding: calc(var(--unit)*2.5);
+    border-left:3px solid var(--primary);
+    background: #f8f9fa;
+    border-radius:8px;
+  }
+  .notes p{ margin:0 0 var(--s-2); } .notes p:last-child{ margin:0; }
+
+  /* Schedule table density */
+  .tight td{ padding-top: calc(var(--unit)*1.5); padding-bottom: calc(var(--unit)*1.5); }
+
+  /* Footer */
+  .footer{ margin-top: calc(var(--unit)*6); color:#64748b; font-size:.95rem; text-align:center; }
+
+  /* PDF Logo Container */
+  .pdf-logo {
+    display: none; /* Скрыт в браузере */
+  }
+
+  /* Print */
+  @media print{
+    /* @page is in print.css */
+
+    * {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      color-adjust: exact !important;
+    }
+
+    .page{
+      margin:0;
+      padding: 0 calc(var(--unit)*4);
+      max-width: 100%;
+    }
+
+    .section{
+      page-break-inside: auto !important;
+      break-inside: auto !important;
+      orphans: 3;
+      widows: 3;
+    }
+
+    .table, .totals, .notes {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    h1, h2, h3{
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    h3 + ul, h2 + p, h3 + p{
+      page-break-before: avoid !important;
+      break-before: avoid !important;
+    }
+
+    tr{
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    .section + .section{ background:none; padding-block-start:20px; }
+    .section > * + *{ margin-top:14px; }
+    h2 + * , h3 + * { margin-top:12px !important; }
+    ul + h2, ul + h3{ margin-top:20px !important; }
+
+    .lead-row .lead {
+      background: none !important;
+      transform: none !important;
+      border-bottom: 0.75pt dotted rgba(0,0,0,0.2) !important;
+      height: auto !important;
+      padding-bottom: 2px;
+    }
+
+    .table tbody tr + tr td { border-top-width: 0.75pt !important; }
+    .footer{ display:none; }
+
+    /* Logo appears on every page */
+    .pdf-logo {
+      display: block;
+      position: fixed;
+      /* Position will be set via JS based on config */
+    }
+    
+    .pdf-logo img {
+      max-width: 100%;
+      height: auto;
+      object-fit: contain;
+      display: block;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="sheet">
+  <main class="page">
+
+    <!-- 01. Price list -->
+    <section class="section no-break" id="price-list">
+      <h2>01. Price list</h2>
+
+      <p class="muted">VAT not included</p>
+
+      <table class="table no-break">
+        <colgroup>
+          <col />
+          <col style="width:28%" />
+        </colgroup>
+        <thead>
+          <tr><th>Stage</th><th class="num">Price (EUR)</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1. Strategic Concept Planning</strong></td>
+            <td class="num"><strong>16 500,00</strong></td>
+          </tr>
+          <tr><td class="indent">Research &amp; Strategic Framework</td><td class="num muted">—</td></tr>
+          <tr><td class="indent">Concept Development</td><td class="num muted">—</td></tr>
+          <tr>
+            <td><strong>2. Schematic Design</strong></td>
+            <td class="num"><strong>16 900,00</strong></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="totals no-break" aria-label="Total">
+        <div class="lead-row"><span class="label">Total</span><span class="lead" aria-hidden="true"></span><span class="value">33 400,00</span></div>
+      </div>
+
+      <div class="notes no-break">
+        <p>(1) Offer is valid within 30 days.</p>
+        <p>(2) Travel and accommodation expenses for specialists visiting the site are not included and will be charged to the customer separately.</p>
+      </div>
+    </section>
+
+    <!-- 02. Terms of payment -->
+    <section class="section page-start" id="terms">
+      <h2>02. Terms of payment</h2>
+      <table class="table no-break">
+        <thead>
+          <tr><th>Payment</th><th>Condition</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>50%</strong></td><td>From the total contract value, prior to commencement of work</td></tr>
+          <tr><td><strong>50%</strong></td><td>After completion of work on the corresponding stage</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 03. Scope of job -->
+    <section class="section page-start" id="scope">
+      <h2>03. Scope of job</h2>
+
+      <h3>1. Strategic Concept Planning</h3>
+
+      <h3 class="muted">1.1. Research &amp; Strategic Framework</h3>
+      <ul>
+        <li>Preliminary research and clarification talk with the client</li>
+        <li>Definition of project goals, target audience, and desired positioning</li>
+        <li>Context research: local and regional conditions, competitive environment, cultural specifics, etc.</li>
+      </ul>
+
+      <h3 class="muted">1.2. Concept Development</h3>
+      <ul>
+        <li>Development of an innovative, commercially viable, and operationally sound SPA concept</li>
+        <li>Preparation of preliminary treatment and function specifications for all spaces</li>
+        <li>Definition of treatment types, service sequence, average capacity, and key operational needs</li>
+        <li>Alignment between treatment logic, guest comfort, and back-of-house functionality</li>
+        <li>Zoning and guest journey mapping — development of a functional layout that defines how guests and staff move through the space, including subdivision into all main and technical areas (treatment rooms, wet zone, storage, preparation, and staff areas), presented in clear diagram form</li>
+        <li>In collaboration with the project’s architects, we will refine the layout through several iterations to ensure optimal spatial solutions, functionality, and guest flow</li>
+        <li>Development of a structured strategic brief that bridges vision and implementation, turning conceptual intent into a clear foundation for design and operation</li>
+      </ul>
+
+      <h3 class="muted">Deliverable (Stage 1)</h3>
+      <ul>
+        <li>Strategic SPA concept document (PDF)</li>
+        <li>Zoning and functional layout schemes (PLA/DWG + PDF)</li>
+      </ul>
+
+      <h3>2. Schematic Design</h3>
+      <p>Translating the approved concept into a tangible spatial vision — defining how every area of the spa functions, feels, and connects. This stage includes:</p>
+      <ul>
+        <li>Master Plan Layout — development of the complete functional plan for all spa areas, detailing guest and staff zones, treatment rooms, wet areas, and back-of-house spaces</li>
+        <li>Coordination and refinement of the layout in collaboration with the client and project architects; up to two revisions included</li>
+        <li>Guest and Staff Flow Diagram — visualization of movement and operational logic throughout the facility, ensuring seamless guest experience and efficient service circulation</li>
+        <li>Calculation of wellness capacity and throughput — determining the optimal number of guests and treatment sessions per shift and per day, based on spatial parameters and service logic</li>
+        <li>Preliminary load calculations for the leading technological and wellness equipment to support further engineering design</li>
+      </ul>
+
+      <h3 class="muted">Deliverable (Stage 2)</h3>
+      <ul>
+        <li>Detailed master plan layout (PLA/DWG + PDF)</li>
+        <li>Capacity calculation (PDF)</li>
+        <li>Load calculation (Excel)</li>
+      </ul>
+
+      <h3 class="muted">The Result</h3>
+      <p>A concept that is thoughtful, evidence-based, and ready for the next design phase — one that feels natural, restorative, and efficient in both guest experience and operations.</p>
+    </section>
+
+    <!-- 04. Schedule -->
+    <section class="section page-start" id="schedule">
+      <h2>04. Schedule</h2>
+      <table class="table tight no-break">
+        <colgroup>
+          <col />
+          <col style="width:28%" />
+        </colgroup>
+        <thead>
+          <tr><th>Stage</th><th class="num">Duration</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1. Strategic Concept Planning</strong></td>
+            <td class="num"><strong>20 work days</strong></td>
+          </tr>
+          <tr><td class="indent">Research &amp; Strategic Framework</td><td class="num muted">—</td></tr>
+          <tr><td class="indent">Concept Development</td><td class="num muted">—</td></tr>
+          <tr>
+            <td><strong>2. Schematic Design</strong></td>
+            <td class="num"><strong>20 work days</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <div class="footer">© Blue Rakun</div>
+
+  </main>
+  </div>
+
+  <!-- PDF Logo (injected dynamically during PDF generation) -->
+  <div class="pdf-logo" id="pdf-logo"></div>
+
+</body>
+</html>
